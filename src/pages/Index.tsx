@@ -2,6 +2,7 @@ import { useState } from "react";
 import Header from "@/components/Header";
 import LanguageSelector from "@/components/LanguageSelector";
 import ElevenLabsWidget from "@/components/ElevenLabsWidget";
+import ChatBox from "@/components/ChatBox";
 import { useToast } from "@/hooks/use-toast";
 
 const Index = () => {
@@ -28,7 +29,7 @@ const Index = () => {
       />
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-4">
+      <main className="flex-1 flex flex-col items-center py-4 px-4 pb-24">
         {/* Language Selector */}
         <div className="mb-4">
           <LanguageSelector
@@ -37,10 +38,8 @@ const Index = () => {
           />
         </div>
 
-        {/* Simple prompt text */}
-        <p className="text-center text-muted-foreground text-base">
-          Tap to talk • बोलने के लिए दबाएं
-        </p>
+        {/* Chat Box */}
+        <ChatBox />
       </main>
 
       {/* ElevenLabs Widget - Bottom right default position */}
