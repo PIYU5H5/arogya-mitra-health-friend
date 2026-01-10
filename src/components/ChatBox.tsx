@@ -31,6 +31,28 @@ const LANGUAGES: { value: Language; label: string; greeting: string }[] = [
 
 const CHAT_URL = `${import.meta.env.VITE_SUPABASE_URL}/functions/v1/medical-chat`;
 
+// Mock responses for local development when API is not configured
+const getMockResponse = (userInput: string, language: Language): string => {
+  const responses: Record<Language, Record<string, string>> = {
+    english: {
+      default: "I'm currently running in local mode. To get full AI responses, please configure your Supabase environment variables (VITE_SUPABASE_URL and VITE_SUPABASE_PUBLISHABLE_KEY). For now, I can tell you that this is a medical assistant app designed to help with general health inquiries. Remember to always consult with healthcare professionals for serious medical concerns.",
+    },
+    hindi: {
+      default: "मैं वर्तमान में स्थानीय मोड में चल रहा हूं। पूर्ण AI प्रतिक्रियाएं प्राप्त करने के लिए, कृपया अपने Supabase environment variables (VITE_SUPABASE_URL और VITE_SUPABASE_PUBLISHABLE_KEY) कॉन्फ़िगर करें। गंभीर चिकित्सा चिंताओं के लिए हमेशा स्वास्थ्य देखभाल पेशेवरों से परामर्श करना याद रखें।",
+    },
+    marathi: {
+      default: "मी सध्या स्थानिक मोडमध्ये चालत आहे. पूर्ण AI प्रतिसाद मिळवण्यासाठी, कृपया आपले Supabase environment variables (VITE_SUPABASE_URL आणि VITE_SUPABASE_PUBLISHABLE_KEY) कॉन्फ़िगर करा. गंभीर वैद्यकीय चिंतांसाठी नेहमी आरोग्य सेवा व्यावसायिकांशी सल्लामसलत करणे आठवा.",
+    },
+    tamil: {
+      default: "நான் தற்போது உள்ளூர் பயன்முறையில் இயங்குகிறேன். முழு AI பதில்களைப் பெற, உங்கள் Supabase environment variables (VITE_SUPABASE_URL மற்றும் VITE_SUPABASE_PUBLISHABLE_KEY) ஐ உள்ளமைக்கவும். தீவிர மருத்துவ கவலைகளுக்கு எப்போதும் சுகாதார நிபுணர்களுடன் கலந்தாலோசிப்பதை நினைவில் கொள்ளுங்கள்.",
+    },
+    telugu: {
+      default: "నేను ప్రస్తుతం స్థానిక మోడ్‌లో నడుస్తున్నాను. పూర్తి AI ప్రతిస్పందనలను పొందడానికి, దయచేసి మీ Supabase environment variables (VITE_SUPABASE_URL మరియు VITE_SUPABASE_PUBLISHABLE_KEY) ని కాన్ఫిగర్ చేయండి. తీవ్రమైన వైద్య ఆందోళనల కోసం ఎల్లప్పుడూ ఆరోగ్య సంరక్షణ నిపుణులతో సంప్రదించడం గుర్తుంచుకోండి.",
+    },
+  };
+  return responses[language]?.default || responses.english.default;
+};
+
 const ChatBox = () => {
   const [language, setLanguage] = useState<Language>("english");
   const langConfig = LANGUAGES.find((l) => l.value === language) || LANGUAGES[0];
@@ -45,6 +67,13 @@ const ChatBox = () => {
   const [isLoading, setIsLoading] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const { toast } = useToast();
+
+  // Check if environment variables are configured
+  const isApiConfigured = 
+    import.meta.env.VITE_SUPABASE_URL && 
+    import.meta.env.VITE_SUPABASE_URL !== "undefined" &&
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY &&
+    import.meta.env.VITE_SUPABASE_PUBLISHABLE_KEY !== "undefined";
 
   const handleLanguageChange = (newLanguage: Language) => {
     setLanguage(newLanguage);
@@ -71,6 +100,18 @@ const ChatBox = () => {
     }
 
     let assistantContent = "";
+
+    // If API is not configured, use mock response
+    if (!isApiConfigured) {
+      const mockResponse = getMockResponse(input.trim(), language);
+      
+      // Simulate API delay and add mock response
+      setTimeout(() => {
+        setMessages((prev) => [...prev, { role: "assistant", content: mockResponse }]);
+        setIsLoading(false);
+      }, 500);
+      return;
+    }
 
     try {
       const response = await fetch(CHAT_URL, {

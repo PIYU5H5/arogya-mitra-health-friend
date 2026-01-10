@@ -32,9 +32,27 @@ cd <YOUR_PROJECT_NAME>
 # Step 3: Install the necessary dependencies.
 npm i
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
+# Step 4 (Optional): Create a .env file for Supabase configuration
+# Create a .env file in the root directory with:
+# VITE_SUPABASE_URL=your_supabase_url
+# VITE_SUPABASE_PUBLISHABLE_KEY=your_supabase_anon_key
+# Note: The app will run in local/mock mode if these are not set
+
+# Step 5: Start the development server with auto-reloading and an instant preview.
 npm run dev
 ```
+
+**Running Locally Without Supabase:**
+
+The app is configured to run locally even without Supabase credentials. It will use mock responses in the chat interface. To get full AI-powered responses, you'll need to:
+
+1. Set up a Supabase project
+2. Create a `.env` file with your Supabase credentials:
+   ```
+   VITE_SUPABASE_URL=https://your-project.supabase.co
+   VITE_SUPABASE_PUBLISHABLE_KEY=your-anon-key
+   ```
+3. Deploy the medical-chat function (located in `supabase/functions/medical-chat/`)
 
 **Edit a file directly in GitHub**
 
