@@ -35,8 +35,8 @@ const BottomNav = ({ activeTab, onTabChange }: BottomNavProps) => {
   ];
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-sm border-t border-border">
-      <div className="container flex items-center justify-around py-2">
+    <nav className="fixed bottom-0 left-0 right-0 z-40 bg-card/95 backdrop-blur-sm border-t border-border pr-24">
+      <div className="flex items-center justify-start gap-2 py-2 px-4">
         {navItems.map((item, index) => (
           <button
             key={index}
