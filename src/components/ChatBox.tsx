@@ -1,10 +1,9 @@
 import { useState, useRef, useEffect, useCallback } from "react";
-import { Send, Bot, User, Loader2, Globe, Trash2 } from "lucide-react";
+import { Send, Bot, User, Loader2, Globe } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useToast } from "@/hooks/use-toast";
-import { useAuth } from "@/hooks/useAuth";
 import { useChatHistory } from "@/hooks/useChatHistory";
 import {
   Select,
@@ -57,8 +56,7 @@ const ChatBox = () => {
   const [language, setLanguage] = useState<Language>("english");
   const langConfig = LANGUAGES.find((l) => l.value === language) || LANGUAGES[0];
   
-  const { user } = useAuth();
-  const { messages, setMessages, saveMessage, clearHistory, isLoadingHistory } = useChatHistory(
+  const { messages, setMessages, isLoadingHistory } = useChatHistory(
     language,
     langConfig.greeting
   );
@@ -93,11 +91,6 @@ const ChatBox = () => {
     setMessages(newMessages);
     setInput("");
     setIsLoading(true);
-
-    // Save user message if logged in
-    if (user) {
-      saveMessage(userMessage);
-    }
 
     let assistantContent = "";
 
@@ -174,10 +167,6 @@ const ChatBox = () => {
         }
       }
 
-      // Save assistant message if logged in
-      if (user && assistantContent) {
-        saveMessage({ role: "assistant", content: assistantContent });
-      }
     } catch (error) {
       console.error("Chat error:", error);
       toast({
@@ -201,13 +190,6 @@ const ChatBox = () => {
     }
   };
 
-  const handleClearHistory = async () => {
-    await clearHistory();
-    toast({
-      title: "Chat cleared",
-      description: "Your conversation history has been cleared",
-    });
-  };
 
   return (
     <div className="flex flex-col w-full h-[calc(100vh-12rem)] sm:h-[calc(100vh-10rem)] md:h-[75vh] lg:h-[70vh] xl:h-[68vh] 2xl:h-[65vh] bg-card rounded-2xl border border-border shadow-lg overflow-hidden">
@@ -221,22 +203,11 @@ const ChatBox = () => {
             <div className="min-w-0">
               <h3 className="font-semibold text-[10px] sm:text-xs text-foreground truncate">Medical Assistant</h3>
               <p className="text-[9px] sm:text-[10px] text-muted-foreground truncate">
-                {user ? "Chat history saved" : "Sign in to save history"}
+                Ask your health questions
               </p>
             </div>
           </div>
           <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-            {user && (
-              <Button
-                variant="ghost"
-                size="icon"
-                className="h-6 w-6 sm:h-7 sm:w-7"
-                onClick={handleClearHistory}
-                title="Clear chat history"
-              >
-                <Trash2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-              </Button>
-            )}
             <Select value={language} onValueChange={(val) => handleLanguageChange(val as Language)}>
               <SelectTrigger className="w-[110px] sm:w-[120px] md:w-[130px] h-6 sm:h-7 text-[10px] sm:text-[11px]">
                 <Globe className="w-2.5 h-2.5 sm:w-3 sm:h-3 mr-1" />

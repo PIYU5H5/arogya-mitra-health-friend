@@ -12,18 +12,19 @@ const Index = () => {
 
   const handleEmergencyClick = () => {
     toast({
-      title: "Emergency Help",
-      description: "Connecting to emergency helpline: 112",
+      title: "Emergency Call",
+      description: "Calling ambulance: 108",
       variant: "destructive",
     });
-    window.location.href = "tel:112";
+    // Directly initiate phone call to 108 (Ambulance number in India)
+    window.location.href = "tel:108";
   };
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header with Navigation & Emergency Button */}
       <Header 
-        onEmergencyClick={handleEmergencyClick} 
+        onEmergencyClick={handleEmergencyClick}
         activeTab={activeTab}
         onTabChange={setActiveTab}
       />
