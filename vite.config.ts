@@ -8,9 +8,6 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 8080,
-    https: false, // Set to true if you want HTTPS (requires certificates)
-    // Note: For getUserMedia to work, you need HTTPS or localhost
-    // localhost is considered a secure context, but some browsers may still require HTTPS
   },
   plugins: [react(), mode === "development" && componentTagger()].filter(Boolean),
   resolve: {
